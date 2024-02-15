@@ -94,27 +94,39 @@ func (b *Blog) CreateBlog(c *gin.Context) {
 func (b *Blog) UpdateBlog(c *gin.Context) {
 	id := c.Param("id")
 
-	intID, err := strconv.Atoi(id)
-	if err != nil || intID < 0 || intID > len(blogs) {
-		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "Blog not found"})
-		return
+	// Convert the ID to an integer
+	intID, _ := strconv.Atoi(id)
+	// if blogID == -1 {
+	// 	c.JSON(400, gin.H{"error": "Invalid ID"})
+	// 	return
+	// }
+
+	// Find the blog with the matching ID
+	// index := findBlogIndex(intID)
+
+	for index, blog := range blogs {
+		if blog.ID == intID {
+			// Parse the request body to get the updated blog data
+			var updatedBlog Blog
+			if err := c.BindJSON(&updatedBlog); err != nil {
+				c.JSON(400, gin.H{"error": "Invalid JSON"})
+				return
+			}
+
+			// Update the blog with the new data
+			updatedBlog.ID = intID
+			blogs[index] = updatedBlog
+
+			// Respond with the updated blog
+			c.JSON(200, updatedBlog)
+			c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": updatedBlog})
+			return
+		}
 	}
-
-	var blogToBeUpdated Blog
-	if err := c.BindJSON(&blogToBeUpdated); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "message": "Invalid JSON format"})
-		return
-	}
-
-	fmt.Println("updating blog with id: ", id)
-
-	// blogs[intID] = blogToBeUpdated
-	blogs[intID].Title = blogToBeUpdated.Title
-	blogs[intID].Description = blogToBeUpdated.Description
-	blogs[intID].Body = blogToBeUpdated.Body
-	blogs[intID].Author = blogToBeUpdated.Author
-	blogs[intID].IsPublished = blogToBeUpdated.IsPublished
-	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": blogToBeUpdated})
+	// if index == -1 {
+	// 	c.JSON(404, gin.H{"error": "Blog not found"})
+	// 	return
+	// }
 }
 
 // DeleteBlog deletes a blog
