@@ -10,10 +10,10 @@ import (
 
 type Blog struct {
 	ID          int    `json:"id"`
-	Title       string `json:"title" binding:"required"`
+	Title       string `json:"title"`
 	Description string `json:"description"`
-	Body        string `json:"body" binding:"required"`
-	Author      string `json:"author" binding:"required"`
+	Body        string `json:"body"`
+	Author      string `json:"author"`
 	IsPublished bool   `json:"isPublished"`
 }
 
@@ -123,6 +123,10 @@ func (b *Blog) UpdateBlog(c *gin.Context) {
 			return
 		}
 	}
+	// if index == -1 {
+	// 	c.JSON(404, gin.H{"error": "Blog not found"})
+	// 	return
+	// }
 }
 
 // DeleteBlog deletes a blog
