@@ -1,88 +1,254 @@
 {
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
   "swagger": "2.0",
+  "info": {
+    "title": "Blog API.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
   "paths": {
     "/blogs": {
       "get": {
-        "produces": [
-          "application/json"
+        "tags": [
+          "blogs"
         ],
-        "operationId": "getBlogs"
+        "summary": "GetBlogs returns all blogs.",
+        "operationId": "getBlogs",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/successResponse"
+          }
+        }
       },
       "post": {
-        "consumes": [
-          "application/json"
+        "tags": [
+          "blogs"
         ],
-        "produces": [
-          "application/json"
-        ],
+        "summary": "CreateBlog creates a new blog and returns it.",
         "operationId": "createBlog",
         "parameters": [
           {
-            "$ref": "#/definitions/Blog",
-            "description": "Blog object that needs to be added",
-            "name": "body",
+            "x-go-name": "Blog",
+            "description": "The blog data",
+            "name": "blog",
             "in": "body",
-            "required": true
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewBlog"
+            }
           }
-        ]
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/successResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
       }
     },
     "/blogs/{id}": {
       "get": {
-        "produces": [
-          "application/json"
+        "tags": [
+          "blogs"
         ],
+        "summary": "GetBlog returns a blog by its ID.",
         "operationId": "getBlog",
         "parameters": [
           {
             "type": "integer",
-            "description": "ID of the blog to get",
+            "format": "int64",
+            "x-go-name": "ID",
+            "description": "The ID of the blog",
             "name": "id",
             "in": "path",
             "required": true
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/successResponse"
+          },
+          "404": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
       },
       "put": {
-        "consumes": [
-          "application/json"
+        "tags": [
+          "blogs"
         ],
-        "produces": [
-          "application/json"
-        ],
+        "summary": "UpdateBlog updates a blog by its ID.",
         "operationId": "updateBlog",
         "parameters": [
           {
             "type": "integer",
-            "description": "ID of the blog to update",
+            "format": "int64",
+            "default": 1,
+            "x-go-name": "ID",
+            "description": "The ID of the blog",
             "name": "id",
             "in": "path",
             "required": true
           },
           {
-            "$ref": "#/definitions/Blog",
-            "description": "Updated blog object",
-            "name": "body",
+            "x-go-name": "Blog",
+            "description": "The blog data",
+            "name": "blog",
             "in": "body",
-            "required": true
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewBlog"
+            }
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/successResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
+          },
+          "404": {
+            "$ref": "#/responses/errorResponse"
+          }
+        }
       },
       "delete": {
-        "produces": [
-          "application/json"
+        "tags": [
+          "blogs"
         ],
+        "summary": "DeleteBlog deletes a blog by its ID.",
         "operationId": "deleteBlog",
         "parameters": [
           {
             "type": "integer",
-            "description": "ID of the blog to delete",
+            "format": "int64",
+            "x-go-name": "ID",
+            "description": "The ID of the blog",
             "name": "id",
             "in": "path",
             "required": true
           }
-        ]
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/successResponse"
+          }
+        }
       }
+    }
+  },
+  "definitions": {
+    "Blog": {
+      "type": "object",
+      "title": "Blog represents a blog post with a title, description, body, author, and publication status.",
+      "required": [
+        "title",
+        "body",
+        "author",
+        "isPublished"
+      ],
+      "properties": {
+        "author": {
+          "description": "The author of the blog",
+          "type": "string",
+          "x-go-name": "Author",
+          "example": "John Doe"
+        },
+        "body": {
+          "description": "The body of the blog",
+          "type": "string",
+          "x-go-name": "Body",
+          "example": "This is the body of my first blog"
+        },
+        "description": {
+          "description": "The description of the blog",
+          "type": "string",
+          "x-go-name": "Description",
+          "example": "This is my first blog"
+        },
+        "id": {
+          "description": "The ID of the blog",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID",
+          "example": 1
+        },
+        "isPublished": {
+          "description": "The publication status of the blog",
+          "type": "boolean",
+          "x-go-name": "IsPublished",
+          "example": true
+        },
+        "title": {
+          "description": "The title of the blog",
+          "type": "string",
+          "x-go-name": "Title",
+          "example": "My first blog"
+        }
+      },
+      "x-go-package": "blog-api/routes"
+    },
+    "NewBlog": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "description": "The author of the blog",
+          "type": "string",
+          "x-go-name": "Author",
+          "example": "John Doe"
+        },
+        "body": {
+          "description": "The body of the blog",
+          "type": "string",
+          "x-go-name": "Body",
+          "example": "This is the body of my first blog"
+        },
+        "description": {
+          "description": "The description of the blog",
+          "type": "string",
+          "x-go-name": "Description",
+          "example": "This is my first blog"
+        },
+        "isPublished": {
+          "description": "The publication status of the blog",
+          "type": "boolean",
+          "x-go-name": "IsPublished",
+          "example": true
+        },
+        "title": {
+          "description": "The title of the blog",
+          "type": "string",
+          "x-go-name": "Title",
+          "example": "My first blog"
+        }
+      },
+      "x-go-package": "blog-api/routes"
+    }
+  },
+  "responses": {
+    "BlogResponse": {
+      "description": "A BlogResponse model",
+      "schema": {
+        "$ref": "#/definitions/Blog"
+      }
+    },
+    "errorResponse": {
+      "description": "A ErrorResponse model"
+    },
+    "successResponse": {
+      "description": "A SuccessResponse model"
     }
   }
 }
