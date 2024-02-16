@@ -8,16 +8,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Blog represents a blog post.
-//
+// Blog represents a blog post with a title, description, body, author, and publication status.
 // swagger:model
 type Blog struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
+	// The ID of the blog
+	//
+	// example: 1
+	ID int `json:"id"`
+
+	// The title of the blog
+	//			required: true
+	// example: My first blog
+	Title string `json:"title"`
+
+	// The description of the blog
+	//
+	// example: This is my first blog
 	Description string `json:"description"`
-	Body        string `json:"body"`
-	Author      string `json:"author"`
-	IsPublished bool   `json:"isPublished"`
+
+	// The body of the blog
+	// 		required: true
+	// example: This is the body of my first blog
+	Body string `json:"body"`
+
+	// The author of the blog
+	// required: true
+	// example: John Doe
+	Author string `json:"author"`
+
+	// The publication status of the blog
+	// required: true
+	// example: true
+	IsPublished bool `json:"isPublished"`
 }
 
 var blogs = []Blog{
@@ -55,48 +77,11 @@ var blogs = []Blog{
 	},
 }
 
-// GetBlogs returns a list of all blogs.
-//
-// swagger:operation GET /blogs getBlogs
-//
-// ---
-// produces:
-// - application/json
-// responses:
-//
-//	200:
-//	  description: Returns a list of blogs
-//	  schema:
-//	    type: array
-//	    items:
-//	      "$ref": "#/definitions/Blog"
 func (b *Blog) GetBlogs(c *gin.Context) {
 	fmt.Printf("getting blogs")
 	c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": blogs})
 }
 
-// GetBlog returns a single blog by ID.
-//
-// swagger:operation GET /blogs/{id} getBlog
-//
-// ---
-// produces:
-// - application/json
-// parameters:
-//   - name: id
-//     in: path
-//     description: ID of the blog to get
-//     required: true
-//     type: integer
-//
-// responses:
-//
-//	200:
-//	  description: Returns a single blog
-//	  schema:
-//	    "$ref": "#/definitions/Blog"
-//	404:
-//	  description: Blog not found
 func (b *Blog) GetBlog(c *gin.Context) {
 	id := c.Param("id")
 	fmt.Println("getting blog with id: ", id)
@@ -117,29 +102,6 @@ func (b *Blog) GetBlog(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "Blog not found"})
 }
 
-// CreateBlog creates a new blog.
-//
-// swagger:operation POST /blogs createBlog
-//
-// ---
-// consumes:
-// - application/json
-// produces:
-// - application/json
-// parameters:
-//   - name: body
-//     in: body
-//     description: Blog object that needs to be added
-//     required: true
-//     schema:
-//     "$ref": "#/definitions/Blog"
-//
-// responses:
-//
-//	201:
-//	  description: Blog created successfully
-//	  schema:
-//	    "$ref": "#/definitions/Blog"
 func (b *Blog) CreateBlog(c *gin.Context) {
 	var incomingBlog Blog
 
@@ -150,36 +112,6 @@ func (b *Blog) CreateBlog(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "data": incomingBlog})
 }
 
-// UpdateBlog updates a blog by ID.
-//
-// swagger:operation PUT /blogs/{id} updateBlog
-//
-// ---
-// consumes:
-// - application/json
-// produces:
-// - application/json
-// parameters:
-//   - name: id
-//     in: path
-//     description: ID of the blog to update
-//     required: true
-//     type: integer
-//   - name: body
-//     in: body
-//     description: Updated blog object
-//     required: true
-//     schema:
-//     "$ref": "#/definitions/Blog"
-//
-// responses:
-//
-//	200:
-//	  description: Blog updated successfully
-//	  schema:
-//	    "$ref": "#/definitions/Blog"
-//	404:
-//	  description: Blog not found
 func (b *Blog) UpdateBlog(c *gin.Context) {
 	id := c.Param("id")
 
@@ -217,27 +149,6 @@ func (b *Blog) UpdateBlog(c *gin.Context) {
 	// 	return
 	// }
 }
-
-// DeleteBlog deletes a blog by ID.
-//
-// swagger:operation DELETE /blogs/{id} deleteBlog
-//
-// ---
-// produces:
-// - application/json
-// parameters:
-//   - name: id
-//     in: path
-//     description: ID of the blog to delete
-//     required: true
-//     type: integer
-//
-// responses:
-//
-//	200:
-//	  description: Blog deleted successfully
-//	404:
-//	  description: Blog not found
 func (b *Blog) DeleteBlog(c *gin.Context) {
 	id := c.Param("id")
 	fmt.Println("deleting blog with id: ", id)
