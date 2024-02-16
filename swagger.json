@@ -1,0 +1,88 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/blogs": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "getBlogs"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "createBlog",
+        "parameters": [
+          {
+            "$ref": "#/definitions/Blog",
+            "description": "Blog object that needs to be added",
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/blogs/{id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "getBlog",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "ID of the blog to get",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "updateBlog",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "ID of the blog to update",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "$ref": "#/definitions/Blog",
+            "description": "Updated blog object",
+            "name": "body",
+            "in": "body",
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "deleteBlog",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "ID of the blog to delete",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ]
+      }
+    }
+  }
+}
