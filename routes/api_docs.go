@@ -48,7 +48,7 @@ type NewBlog struct {
 //
 // Responses:
 //
-//	200: successResponse
+//	200: successResponseR
 func GetBlogs() {}
 
 // swagger:parameters getBlog
@@ -66,7 +66,7 @@ type BlogIDParam struct {
 //
 // Responses:
 //
-//	200: successResponse
+//	200: successResponseR
 //	404: errorResponse
 func GetBlog() {}
 
@@ -132,6 +132,7 @@ type DeleteBlogParams struct {
 // Responses:
 //
 //	200: successResponse
+//	400: errorResponse
 func DeleteBlog() {}
 
 // A BlogResponse model
@@ -146,6 +147,12 @@ type BlogResponse struct {
 //
 // swagger:response errorResponse
 type ErrorResponse struct {
+	// The http status
+	//
+	// in: body
+	// required: true
+	Status string `json:"status"`
+
 	// The error message
 	//
 	// in: body
@@ -157,9 +164,30 @@ type ErrorResponse struct {
 //
 // swagger:response successResponse
 type SuccessResponse struct {
-	// The success message
+	// The http status
 	//
 	// in: body
 	// required: true
-	Message string `json:"message"`
+	Status string `json:"status"`
+
+	// The blog data
+	//
+	// in: body
+	Data string `json:"data"`
+}
+
+// A SuccessResponseR model
+//
+// swagger:response successResponseR
+type SuccessResponseR struct {
+	// The http status
+	//
+	// in: body
+	// required: true
+	Status string `json:"status"`
+
+	// The array of blogs
+	//
+	// in: body
+	Data []Blog `json:"data"`
 }

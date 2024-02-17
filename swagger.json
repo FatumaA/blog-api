@@ -25,7 +25,7 @@
         "operationId": "getBlogs",
         "responses": {
           "200": {
-            "$ref": "#/responses/successResponse"
+            "$ref": "#/responses/successResponseR"
           }
         }
       },
@@ -77,7 +77,7 @@
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/successResponse"
+            "$ref": "#/responses/successResponseR"
           },
           "404": {
             "$ref": "#/responses/errorResponse"
@@ -144,6 +144,9 @@
         "responses": {
           "200": {
             "$ref": "#/responses/successResponse"
+          },
+          "400": {
+            "$ref": "#/responses/errorResponse"
           }
         }
       }
@@ -249,6 +252,15 @@
     },
     "successResponse": {
       "description": "A SuccessResponse model"
+    },
+    "successResponseR": {
+      "description": "A SuccessResponseR model",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/Blog"
+        }
+      }
     }
   }
 }
