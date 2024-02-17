@@ -87,8 +87,9 @@ func (b *Blog) GetBlog(c *gin.Context) {
 	fmt.Println("getting blog with id: ", id)
 
 	intID, err := strconv.Atoi(id)
-	if err != nil || intID < 0 || intID >= len(blogs) {
-		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "Something went wrong" + err.Error()})
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": err.Error()})
+		return
 	}
 
 	//find blog whose id matched the param id
@@ -106,7 +107,11 @@ func (b *Blog) CreateBlog(c *gin.Context) {
 	var incomingBlog Blog
 
 	incomingBlog.ID = len(blogs) + 1
-	c.BindJSON(&incomingBlog)
+	err := c.BindJSON(&incomingBlog)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "message": err.Error()})
+		return
+	}
 	blogs = append(blogs, incomingBlog)
 
 	c.JSON(http.StatusCreated, gin.H{"status": http.StatusCreated, "data": incomingBlog})
@@ -116,21 +121,20 @@ func (b *Blog) UpdateBlog(c *gin.Context) {
 	id := c.Param("id")
 
 	// Convert the ID to an integer
-	intID, _ := strconv.Atoi(id)
-	// if blogID == -1 {
-	// 	c.JSON(400, gin.H{"error": "Invalid ID"})
-	// 	return
-	// }
+	intID, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": err.Error()})
+		return
+	}
 
 	// Find the blog with the matching ID
-	// index := findBlogIndex(intID)
-
 	for index, blog := range blogs {
 		if blog.ID == intID {
 			// Parse the request body to get the updated blog data
 			var updatedBlog Blog
-			if err := c.BindJSON(&updatedBlog); err != nil {
-				c.JSON(400, gin.H{"error": "Invalid JSON"})
+			err := c.BindJSON(&updatedBlog)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"status": http.StatusBadRequest, "message": err.Error()})
 				return
 			}
 
@@ -139,24 +143,22 @@ func (b *Blog) UpdateBlog(c *gin.Context) {
 			blogs[index] = updatedBlog
 
 			// Respond with the updated blog
-			c.JSON(200, updatedBlog)
 			c.JSON(http.StatusOK, gin.H{"status": http.StatusOK, "data": updatedBlog})
 			return
 		}
 	}
-	// if index == -1 {
-	// 	c.JSON(404, gin.H{"error": "Blog not found"})
-	// 	return
-	// }
+	c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "Blog not found"})
 }
+
 func (b *Blog) DeleteBlog(c *gin.Context) {
 	id := c.Param("id")
 	fmt.Println("deleting blog with id: ", id)
 
 	intID, err := strconv.Atoi(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": "Something went wrong" + err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"status": http.StatusNotFound, "message": err.Error()})
 	}
+
 	for index, blog := range blogs {
 		if blog.ID == intID {
 			blogs = append(blogs[:index], blogs[index+1:]...)
